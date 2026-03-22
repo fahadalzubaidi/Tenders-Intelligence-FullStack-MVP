@@ -1,9 +1,10 @@
 import json
 import io
+import os
 import pandas as pd
 import streamlit as st
 
-DATA_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "mock_tenders_data.json")
+DATA_PATH = "mock_tenders_data.json"
 
 # ── Required top-level keys for validation ──────────────────────────────────────
 REQUIRED_FIELDS = {"id", "tenderName", "proposals", "awarded_proposals"}
@@ -131,15 +132,13 @@ def _validate(raw: list) -> list[str]:
 @st.cache_data(show_spinner="Loading tenders data...")
 def _load_default() -> tuple[pd.DataFrame, pd.DataFrame]:
     if not os.path.exists(DATA_PATH):
-        st.error(
-            "⚠️ **No default data file found.**\n\n"
-            "The file `mock_tenders_data.json` is missing from the project folder.\n\n"
-            "👈 Use **📂 Upload Custom Data** in the sidebar to load your own JSON dataset."
-        )
-        st.stop()
-    with open(DATA_PATH, "r", encoding="utf-8") as f:
-        raw = json.load(f)
-    return _parse_raw(raw)
+        return pd.DataFrame(), pd.DataFrame()
+    try:
+        with open(DATA_PATH, "r", encoding="utf-8") as f:
+            raw = json.load(f)
+        return _parse_raw(raw)
+    except Exception:
+        return pd.DataFrame(), pd.DataFrame()
 
 
 def load_data() -> tuple[pd.DataFrame, pd.DataFrame]:
@@ -154,21 +153,29 @@ def load_data() -> tuple[pd.DataFrame, pd.DataFrame]:
     return _load_default()
 
 
-# ── Sidebar upload widget — call this from app.py sidebar block ─────────────────
+# ── Sidebar upload widget — call this from Home.py sidebar block ─────────────────
 def render_upload_widget():
     """Render the data-upload expander in the sidebar."""
+    no_default = not os.path.exists(DATA_PATH)
+    no_upload  = st.session_state.get("uploaded_raw") is None
+    # Auto-expand if there is no data at all
+    auto_expand = no_default and no_upload
+
     with st.sidebar:
-        with st.expander("📂 Upload Custom Data", expanded=False):
+        with st.expander("📂 Upload Data" + (" ← Required" if auto_expand else ""), expanded=auto_expand):
+            if auto_expand:
+                st.warning("No dataset found. Please upload a JSON file to use the app.", icon="⚠️")
+
             uploaded = st.file_uploader(
                 "Upload a JSON file", type=["json"],
-                help="Must be an array of tender objects in the same format as mock_tenders_data.json",
+                help="Must be an array of tender objects matching the Etimad export format.",
                 key="data_upload",
             )
 
             if uploaded is not None:
                 # Size check (max 50 MB)
                 MAX_BYTES = 50 * 1024 * 1024
-                uploaded.seek(0, 2)          # seek to end
+                uploaded.seek(0, 2)
                 size = uploaded.tell()
                 uploaded.seek(0)
                 if size > MAX_BYTES:
@@ -187,11 +194,9 @@ def render_upload_widget():
                 for w in warnings:
                     st.warning(w)
 
-                # If root isn't a list, abort
                 if not isinstance(raw, list):
                     return
 
-                # Store in session state and clear cache
                 st.session_state["uploaded_raw"] = raw
                 st.session_state["uploaded_filename"] = uploaded.name
                 st.success(f"✅ Loaded **{uploaded.name}** ({len(raw):,} tenders)")
@@ -205,5 +210,5 @@ def render_upload_widget():
                     st.session_state.pop("uploaded_raw", None)
                     st.session_state.pop("uploaded_filename", None)
                     st.rerun()
-            else:
+            elif not no_default:
                 st.caption("Using default: `mock_tenders_data.json`")

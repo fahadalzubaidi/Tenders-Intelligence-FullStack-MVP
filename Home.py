@@ -65,7 +65,19 @@ if st.session_state.get("uploaded_raw") is not None:
     fname = st.session_state.get("uploaded_filename", "custom file")
     st.success(f"📂 Viewing custom dataset: **{fname}**")
 
-# ── KPI Cards ──────────────────────────────────────────────────────────────────
+# ── No data state ───────────────────────────────────────────────────────────────
+if df_tenders.empty:
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.info(
+        "### 📂 No Data Loaded\n\n"
+        "No default dataset was found. To get started:\n\n"
+        "1. Click **📂 Upload Data ← Required** in the sidebar\n"
+        "2. Upload your JSON file (Etimad / Monafasat export format)\n\n"
+        "Once uploaded, all pages will populate automatically.",
+        icon="📂",
+    )
+    st.stop()
+
 c1, c2, c3, c4, c5 = st.columns(5)
 total_spend = df_proposals[df_proposals["is_winner"]]["awarding_value"].sum()
 
