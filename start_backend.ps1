@@ -15,8 +15,8 @@ if (-not (Test-Path "venv")) {
 # Install requirements
 pip install -r requirements.txt --quiet
 
-Write-Host "Backend running at http://localhost:8001" -ForegroundColor Green
-Write-Host "API docs at http://localhost:8001/docs" -ForegroundColor Green
+Write-Host "Backend running at http://localhost:8000" -ForegroundColor Green
+Write-Host "API docs at http://localhost:8000/docs" -ForegroundColor Green
 Write-Host ""
 
-uvicorn main:app --reload --host 0.0.0.0 --port 8001
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
