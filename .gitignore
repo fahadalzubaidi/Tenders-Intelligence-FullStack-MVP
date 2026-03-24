@@ -8,19 +8,15 @@ __pycache__/
 *.egg-info/
 dist/
 build/
-
-# Virtual environments
-.env
-.venv
-env/
+node_modules/
 venv/
+.venv/
+env/
 ENV/
 
-# Streamlit secrets
-.streamlit/secrets.toml
-
-# Large data files (upload your own via the app's upload widget)
-mock_tenders_data.json
+# Large data files
+# mock_tenders_data.json is NOT ignored now as requested
+*.db
 
 # OS files
 .DS_Store
