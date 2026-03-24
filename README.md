@@ -1,99 +1,106 @@
-# Tenders Intelligence Full-Stack MVP
+# Jyad — Tenders Intelligence Platform
 
-A comprehensive full-stack intelligence platform for Saudi Arabia (KSA) procurement and tender analytics. Built with **FastAPI** on the backend and **React 18** on the frontend, this platform provides actionable insights into government tenders, vendor performance, and market dynamics.
-
----
-
-## 🚀 Key Features
-
-- **Tender Analytics Dashboard**: Visualize KPIs, sectors, and regional distributions.
-- **Advanced Search & Filtering**: Explore government tenders with detailed filtering by region, status, and value.
-- **Market Intelligence**: Analyze top-performing companies and competitive density.
-- **Authentication System**: Secure JWT-based access with login and registration.
-- **Responsive Web Interface**: Optimized for both desktop and tablet experiences.
+A full-stack web application for KSA (Saudi Arabia) procurement intelligence, built with **FastAPI + React**.
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Layer | Technology |
 |---|---|
 | **Frontend** | React 18 + Vite, Tailwind CSS v4, Recharts, React Router v7 |
-| **Backend** | FastAPI, SQLAlchemy, SQLite, python-jose (JWT) |
-| **Data Processing** | Pandas, mock Etimad/Monafasat JSON data |
-| **Environment** | PowerShell startup scripts for Windows |
+| **Backend** | FastAPI, SQLAlchemy, SQLite |
+| **Auth** | JWT tokens (python-jose), bcrypt passwords |
+| **Data** | Pandas, mock Etimad/Monafasat JSON data |
 
 ---
 
-## 🏁 Quick Start
+## Quick Start
 
 ### 1. Start the Backend
-The backend runs on **FastAPI** and handles all data processing and authentication.
 
 ```powershell
-# In the root directory
 .\start_backend.ps1
 ```
 
-*Backend API: http://localhost:8001 | API Documentation: http://localhost:8001/docs*
+Or manually:
+```powershell
+cd backend
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+uvicorn main:app --reload --port 8001
+```
+
+Backend: http://localhost:8001
+API Docs: http://localhost:8001/docs
 
 ### 2. Start the Frontend
-The frontend is a modern **React SPA** built with Vite.
 
 ```powershell
-# In the root directory
 .\start_frontend.ps1
 ```
 
-*Frontend: http://localhost:5173*
+Or manually:
+```powershell
+cd frontend
+npm install
+npm run dev
+```
+
+Frontend: http://localhost:5173
 
 ---
 
-## 🔐 Authentication
-Use the following credentials to explore the platform:
+## Default Login Credentials
 
-| Role | Username | Password |
+| Username | Password |
+|---|---|
+| admin | admin123 |
+| demo | demo123 |
+
+You can also register a new account at /register.
+
+---
+
+## Pages
+
+| Page | Route | Description |
 |---|---|---|
-| **Admin** | `admin` | `admin123` |
-| **Demo User** | `demo` | `demo123` |
-
-*New accounts can also be created via the /register page.*
+| Login | /login | Authentication page |
+| Register | /register | Create new account |
+| Dashboard | / | KPI overview, sector/region charts |
+| Tenders Listing | /tenders | Searchable, filterable tender browser |
+| Opportunity Detail | /opportunity/:id | Deep-dive single tender view |
+| Company Intelligence | /company | Vendor profiles and analytics |
+| Market Views | /market-views | Top companies, competitive density, pricing |
+| Market Insights | /market-insights | Sector and region specialists |
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
-```text
+```
 Jyad/
 ├── backend/
 │   ├── main.py              # FastAPI app entry point
-│   ├── auth.py              # JWT authentication logic
-│   ├── database.py          # SQLAlchemy models & SQLite setup
-│   ├── data_service.py      # Core data processing (Pandas)
-│   ├── schemas.py           # Pydantic data validation
-│   └── routers/             # API routes (Auth, Tenders, Vendors, Market)
+│   ├── auth.py              # JWT authentication
+│   ├── database.py          # SQLAlchemy models + SQLite
+│   ├── data_service.py      # Tender data processing (Pandas)
+│   ├── schemas.py           # Pydantic schemas
+│   ├── config.py            # Settings
+│   └── routers/
+│       ├── auth.py          # /api/auth/*
+│       ├── tenders.py       # /api/tenders/*
+│       ├── vendors.py       # /api/vendors/*
+│       └── market.py        # /api/market/*
 ├── frontend/
 │   └── src/
-│       ├── api/client.js    # Centralized Axios API client
-│       ├── context/         # Auth & Global state management
-│       ├── components/      # Reusable UI components (Sidebar, KpiCard, etc.)
-│       └── pages/           # Platform pages (8 distinct views)
-├── mock_tenders_data.json   # Sample KSA procurement dataset
-├── start_backend.ps1        # One-click backend startup script
-└── start_frontend.ps1       # One-click frontend startup script
+│       ├── api/client.js    # Axios API client
+│       ├── context/         # Auth context
+│       ├── components/      # Layout, Sidebar, KpiCard, ProtectedRoute
+│       └── pages/           # All 8 pages
+├── mock_tenders_data.json   # Sample KSA tender data
+├── start_backend.ps1
+└── start_frontend.ps1
 ```
-
----
-
-## 📊 Sample Data
-The project includes a substantial `mock_tenders_data.json` file (~19MB) that simulates real-world KSA procurement data, including:
-- Tender values and release dates
-- Regional classifications (Riyadh, Jeddah, etc.)
-- Industry sector categorization
-- Vendor participation and bidding history
-
----
-
-## 📜 Repository
-This project has been updated and migrated to its own dedicated repository:
-**[Tenders-Intelligence-FullStack-MVP](https://github.com/fahadalzubaidi/Tenders-Intelligence-FullStack-MVP.git)**
