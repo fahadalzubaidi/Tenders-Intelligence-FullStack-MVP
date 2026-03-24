@@ -20,35 +20,37 @@ A full-stack web application for KSA (Saudi Arabia) procurement intelligence, bu
 ### 1. Start the Backend
 
 ```powershell
-.\start_backend.ps1
-```
-
-Or manually:
-```powershell
+# Navigate to backend folder
 cd backend
+
+# Create and activate virtual environment
 python -m venv venv
 .\venv\Scripts\Activate.ps1
+
+# Install requirements
 pip install -r requirements.txt
-uvicorn main:app --reload --port 8001
+
+# Start the API server
+uvicorn main:app --reload --port 8000
 ```
 
-Backend: http://localhost:8001
-API Docs: http://localhost:8001/docs
+*   **API URL:** `http://localhost:8000`
+*   **API Docs:** `http://localhost:8000/docs`
 
 ### 2. Start the Frontend
 
 ```powershell
-.\start_frontend.ps1
-```
-
-Or manually:
-```powershell
+# Navigate to frontend folder (different terminal)
 cd frontend
+
+# Install dependencies (only required first time)
 npm install
+
+# Start the dev server
 npm run dev
 ```
 
-Frontend: http://localhost:5173
+*   **Frontend URL:** `http://localhost:5173`
 
 ---
 
@@ -59,7 +61,7 @@ Frontend: http://localhost:5173
 | admin | admin123 |
 | demo | demo123 |
 
-You can also register a new account at /register.
+You can also register a new account at `/register`.
 
 ---
 
@@ -71,7 +73,7 @@ You can also register a new account at /register.
 | Register | /register | Create new account |
 | Dashboard | / | KPI overview, sector/region charts |
 | Tenders Listing | /tenders | Searchable, filterable tender browser |
-| Opportunity Detail | /opportunity/:id | Deep-dive single tender view |
+| Opportunity Detail | /opportunity | Deep-dive single tender view |
 | Company Intelligence | /company | Vendor profiles and analytics |
 | Market Views | /market-views | Top companies, competitive density, pricing |
 | Market Insights | /market-insights | Sector and region specialists |
@@ -101,6 +103,5 @@ Jyad/
 │       ├── components/      # Layout, Sidebar, KpiCard, ProtectedRoute
 │       └── pages/           # All 8 pages
 ├── mock_tenders_data.json   # Sample KSA tender data
-├── start_backend.ps1
-└── start_frontend.ps1
+└── .gitignore               # Root ignore rules
 ```
